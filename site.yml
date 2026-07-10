@@ -1,0 +1,19 @@
+---
+- name: Deploy Bus Reservation System (Hasad) via Professional Dynamic Roles
+  hosts: ansible_node
+  become: yes
+
+  vars_files:
+    - vars/secrets.yml
+
+  vars:
+    remote_deploy_dir: "{{ vault_remote_deploy_dir }}"
+    app_container_name: "{{ vault_app_container_name }}"
+    local_compose_src: "{{ vault_local_compose_src }}"
+    local_env_src: "{{ vault_local_env_src }}"
+    docker_hub_user: "{{ vault_docker_hub_user }}"
+    docker_hub_token: "{{ vault_docker_hub_token }}"
+
+  roles:
+    - docker_setup
+    - laravel_deploy

@@ -1,0 +1,60 @@
+---
+- name: 1. Clean up stubborn containers and profiles
+  ansible.builtin.shell:
+    cmd: "docker compose down --volumes --remove-orphans"
+    chdir: "{{ remote_deploy_dir }}"
+  ignore_errors: yes
+
+- name: 2. Nuclear wipe for any remaining volume on the node
+  ansible.builtin.shell:
+    cmd: "docker volume prune -f"
+  ignore_errors: yes
+
+- name: 3. Copy project docker-compose configuration
+  ansible.builtin.copy:
+    src: "{{ local_compose_src }}"
+    dest: "{{ remote_deploy_dir }}/docker-compose.yml"
+    owner: ubuntu
+    group: ubuntu
+    mode: "0644"
+
+- name: 4. Copy synchronized environment file to the server
+  ansible.builtin.copy:
+    src: "{{ local_env_src }}"
+    dest: "{{ remote_deploy_dir }}/.env.prod"
+    owner: ubuntu
+    group: ubuntu
+    mode: "0644"
+
+- name: 5. Log in to Docker Hub
+  ansible.builtin.shell:
+    cmd: "docker login -u '{{ docker_hub_user }}' -p '{{ docker_hub_token }}'"
+
+- name: 6. Start production containers from a perfectly clean slate
+  ansible.builtin.shell:
+    cmd: "docker compose up -d"
+    chdir: "{{ remote_deploy_dir }}"
+
+- name: 7. Wait for Database to fully build files
+  ansible.builtin.pause:
+    seconds: 35
+
+- name: 8. Clear Laravel configuration cache inside the container
+  ansible.builtin.shell:
+    cmd: "docker exec {{ app_container_name }} php artisan config:clear"
+
+- name: 9. Run Laravel database migrations inside the container
+  ansible.builtin.shell:
+    cmd: "docker exec {{ app_container_name }} php artisan migrate --force"
+
+- name: 10. Run Laravel database seeding for initial data
+  ansible.builtin.shell:
+    cmd: "docker exec {{ app_container_name }} php artisan db:seed --force"
+
+- name: 11. Optimize Laravel configuration cache for production speed
+  ansible.builtin.shell:
+    cmd: "docker exec {{ app_container_name }} php artisan config:cache"
+
+- name: 12. Fix Laravel storage and cache permissions
+  ansible.builtin.shell:
+    cmd: "docker exec {{ app_container_name }} chown -R devops:devops /var/www/storage /var/www/bootstrap/cache && docker exec {{ app_container_name }} chmod -R 775 /var/www/storage /var/www/bootstrap/cache"

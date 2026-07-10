@@ -1,0 +1,27 @@
+galaxy_info:
+  author: Naif Saleh Alsebaeai
+  description: Professional, dynamic, and production-ready Ansible role to deploy Laravel applications seamlessly using Docker Compose with optimized caching and absolute permission fixes.
+  company: DevOps Infrastructure Solutions
+
+  # تراخيص الكود البرمجي (المصادر المفتوحة)
+  license: MIT
+
+  min_ansible_version: "2.10"
+
+  # المنصات والأنظمة المتوافقة مع هذا الدور
+  platforms:
+    - name: Ubuntu
+      versions:
+        - focal
+        - jammy
+        - noble
+
+  galaxy_tags:
+    - laravel
+    - php
+    - docker
+    - docker-compose
+    - deployment
+    - devops
+
+dependencies: []
