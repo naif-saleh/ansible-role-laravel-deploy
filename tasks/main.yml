@@ -1,0 +1,8 @@
+---
+# 1. تثبيت وتجهيز البيئة الأساسية (الدوكر)
+- name: Include Docker Setup Tasks
+  include_tasks: docker_setup.yml
+
+# 2. تشغيل ونشر تطبيق تذاكر الباصات (لارفل)
+- name: Include Laravel Deployment Tasks
+  include_tasks: laravel_deploy.yml
