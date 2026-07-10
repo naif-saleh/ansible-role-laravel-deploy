@@ -1,4 +1,11 @@
 ---
+# 🌟 الخطوة المضافة لتثبيت rsync تلقائياً دون تدخل يدوي منك
+- name: 0. Ensure rsync is installed on the remote server
+  ansible.builtin.apt:
+    name: rsync
+    state: present
+    update_cache: yes
+
 - name: 1. Clean up stubborn containers and profiles
   ansible.builtin.shell:
     cmd: "docker compose down --volumes --remove-orphans"
@@ -25,6 +32,17 @@
     owner: ubuntu
     group: ubuntu
     mode: "0644"
+
+# 🌟 الخطوة المضافة لنسخ الكود الكامل والصور الجديدة تلقائياً مع كل Push
+- name: 4.5 Synchronize entire Laravel codebase and images to the server
+  ansible.builtin.synchronize:
+    src: "./"
+    dest: "{{ remote_deploy_dir }}/"
+    delete: yes
+    rsync_opts:
+      - "--exclude=.git"
+      - "--exclude=node_modules"
+      - "--exclude=.github"
 
 - name: 5. Log in to Docker Hub
   ansible.builtin.shell:
