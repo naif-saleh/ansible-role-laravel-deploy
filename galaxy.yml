@@ -1,9 +1,9 @@
 namespace: naif_saleh
-name: infra
+name: infra_tools
 version: 1.0.0
 authors:
   - Naif Saleh Alsebaeai
-description: Infrastructure automation collection for Docker and Laravel deployment
+description: Unified Ansible collection containing docker_setup and laravel_deploy roles
 readme: README.md
 license: MIT
 tags:
