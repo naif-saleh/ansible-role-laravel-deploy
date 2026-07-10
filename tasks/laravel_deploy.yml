@@ -17,6 +17,17 @@
     cmd: "docker volume prune -f"
   ignore_errors: yes
 
+# 🌟 الخطوة المضافة لنسخ الكود الكامل والصور الجديدة تلقائياً مع كل Push
+- name: 2.5 Synchronize entire Laravel codebase and images to the server
+  ansible.builtin.synchronize:
+    src: "./"
+    dest: "{{ remote_deploy_dir }}/"
+    delete: yes
+    rsync_opts:
+      - "--exclude=.git"
+      - "--exclude=node_modules"
+      - "--exclude=.github"
+
 - name: 3. Copy project docker-compose configuration
   ansible.builtin.copy:
     src: "{{ local_compose_src }}"
@@ -33,16 +44,7 @@
     group: ubuntu
     mode: "0644"
 
-# 🌟 الخطوة المضافة لنسخ الكود الكامل والصور الجديدة تلقائياً مع كل Push
-- name: 4.5 Synchronize entire Laravel codebase and images to the server
-  ansible.builtin.synchronize:
-    src: "./"
-    dest: "{{ remote_deploy_dir }}/"
-    delete: yes
-    rsync_opts:
-      - "--exclude=.git"
-      - "--exclude=node_modules"
-      - "--exclude=.github"
+
 
 - name: 5. Log in to Docker Hub
   ansible.builtin.shell:
