@@ -15,5 +15,4 @@
     docker_hub_token: "{{ vault_docker_hub_token }}"
 
   roles:
-    - docker_setup
-    - laravel_deploy
+    - role: .
