@@ -1,0 +1,12 @@
+namespace: naif_saleh
+name: infra
+version: 1.0.0
+authors:
+  - Naif Saleh Alsebaeai
+description: Infrastructure automation collection for Docker and Laravel deployment
+readme: README.md
+license: MIT
+tags:
+  - devops
+  - docker
+  - laravel
